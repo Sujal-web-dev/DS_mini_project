@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Record Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--side:#231942;--side-ink:#d9d2f5;--bg:#f4f3fb;--card:#fff;--ink:#1c1733;--muted:#6b668a;--line:#e4e1f2;--p:#6d4aff;--p-soft:#ece8ff;--g:#0f9d74;--g-soft:#dcf6ec;--r:#d63c4a;--r-soft:#fde6e8;--y:#ffc233;--y-soft:#fff2cc;--code:#18122e;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side:#150f2b;--bg:#0f0b1d;--card:#1b1535;--ink:#ece9fa;--muted:#9f98c4;--line:#2f2757;--p:#8b6dff;--p-soft:#2b2257;--g:#35d0a0;--g-soft:#12362e;--r:#ff7a86;--r-soft:#3d1a24;--y-soft:#3a2f12;--code:#0a0716;color-scheme:dark}}
+:root[data-theme="dark"]{--side:#150f2b;--bg:#0f0b1d;--card:#1b1535;--ink:#ece9fa;--muted:#9f98c4;--line:#2f2757;--p:#8b6dff;--p-soft:#2b2257;--g:#35d0a0;--g-soft:#12362e;--r:#ff7a86;--r-soft:#3d1a24;--y-soft:#3a2f12;--code:#0a0716;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+aside{background:var(--side);color:var(--side-ink);padding:24px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px 22px;font-weight:800;color:#fff;line-height:1.2}
+.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#8b6dff,#ff7ab6);display:grid;place-items:center;font-size:1.2rem;flex:none}
+.tab{all:unset;box-sizing:border-box;display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:12px;cursor:pointer;font-weight:600;width:100%}
+.tab:hover{background:rgba(255,255,255,.08)}
+.tab[aria-current="page"]{background:var(--p);color:#fff}
+.tab:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.spacer{flex:1}
+.side-btn{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);text-align:center;font-weight:600;font-size:.9rem}
+.side-btn:hover{background:rgba(255,255,255,.08)}
+main{padding:30px clamp(16px,4vw,44px) 50px;min-width:0}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:24px}
+h1{margin:0;font-size:1.75rem;letter-spacing:-.02em;font-weight:800}
+.sub{margin:2px 0 0;color:var(--muted)}
+.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:11px 18px;background:var(--p);color:#fff;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:var(--p-soft);color:var(--p)}
+.btn.sm{padding:6px 12px;font-size:.85rem;border-radius:9px}
+.btn.del{background:var(--r-soft);color:var(--r)}
+.btn:disabled{opacity:.5;cursor:wait}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:22px}
+.stat{background:var(--card);border-radius:18px;padding:18px 20px;border:1px solid var(--line)}
+.stat .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:1.2rem;margin-bottom:12px}
+.stat b{display:block;font-size:1.9rem;line-height:1.1;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:.9rem}
+.stat small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:22px}
+.panel h2{margin:0 0 4px;font-size:1.15rem}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+input{font:inherit;padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);width:100%}
+input:focus{border-color:var(--p);outline:none}
+.tools input{flex:1;min-width:200px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:.85rem;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:13px 12px;border-bottom:1px solid var(--line)}
+tr.hit td{background:var(--y-soft)}
+.who{display:flex;align-items:center;gap:12px;font-weight:600}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.85rem;flex:none}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.88rem}
+.pill{display:inline-block;padding:3px 11px;border-radius:99px;font-weight:700;font-size:.85rem}
+.empty{text-align:center;color:var(--muted);padding:34px 10px}
+.chain{display:flex;flex-wrap:wrap;gap:14px 0;align-items:stretch;padding:8px 0}
+.chain>*{display:flex;align-items:center}
+.ar{width:36px;justify-content:center;color:var(--p);font-size:1.4rem;font-weight:700}
+.tag{align-self:center;padding:9px 14px;border-radius:10px;font:500 .85rem "IBM Plex Mono",monospace}
+.tag.h{background:var(--p);color:#fff}.tag.n{border:2px dashed var(--muted);color:var(--muted)}
+.nd{border:2px solid var(--p);border-radius:14px;overflow:hidden;background:var(--card);transition:transform .2s,background .2s}
+.nd .d{padding:10px 14px;min-width:160px;display:block;line-height:1.35}
+.nd .d b{display:block}.nd .d small{display:block;color:var(--muted)}
+.nd .x{align-self:stretch;background:var(--p-soft);color:var(--p);padding:0 10px;font:500 .75rem "IBM Plex Mono",monospace;display:flex;align-items:center;border-left:2px solid var(--p)}
+.nd.visit{background:var(--y-soft);border-color:var(--y);transform:translateY(-4px)}
+.nd.found{background:var(--g-soft);border-color:var(--g)}
+.nd.new{animation:pop .4s ease-out}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.docs p,.docs li{max-width:70ch}
+.docs ol{padding-left:22px}
+pre{background:var(--code);color:#d9d2f5;border-radius:14px;padding:16px;overflow:auto;font:400 .8rem/1.55 "IBM Plex Mono",monospace;margin:10px 0;max-height:540px}
+details{margin-top:10px}summary{cursor:pointer;font-weight:700;padding:8px 0}
+dialog{border:0;border-radius:20px;padding:26px;width:min(440px,92vw);background:var(--card);color:var(--ink);box-shadow:0 30px 80px rgba(20,10,60,.4)}
+dialog::backdrop{background:rgba(20,12,50,.55)}
+dialog h2{margin:0 0 12px}
+label{display:block;margin:12px 0 4px;font-weight:600;font-size:.9rem}
+.err{color:var(--r);font-weight:600;min-height:1.4em;margin:10px 0 0;font-size:.92rem}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+#toast{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:30;max-width:min(380px,90vw);padding:14px 18px;border-radius:14px;font-weight:600;color:#fff;background:var(--g);box-shadow:0 10px 30px rgba(0,0,0,.25);white-space:pre-line;transform:translateY(30px);opacity:0;pointer-events:none;transition:.25s}
+#toast.show{transform:none;opacity:1}#toast.bad{background:var(--r);color:#fff}
+@media (max-width:760px){
+ .app{grid-template-columns:1fr}
+ aside{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;flex-direction:row;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));z-index:20;gap:4px;border-radius:18px 18px 0 0}
+ .brand,.spacer,.side-btn{display:none}
+ .tab{flex-direction:column;gap:2px;font-size:.72rem;padding:8px 4px;justify-content:center;text-align:center}
+ main{padding-bottom:110px}
+ #toast{bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><span class="logo">🎓</span><span>Student Record<br>Management</span></div>
+  <button class="tab" data-v="dash" aria-current="page"><span>📊</span>Dashboard</button>
+  <button class="tab" data-v="stu"><span>👥</span>Students</button>
+  <button class="tab" data-v="list"><span>🔗</span>Linked list</button>
+  <button class="tab" data-v="docs"><span>📘</span>Documentation</button>
+  <div class="spacer"></div>
+  <button class="side-btn" id="theme" type="button">Switch theme</button>
+  <button class="side-btn" data-xl hidden type="button">Export to Excel</button>
+  <button class="side-btn" id="exit" type="button">Free all &amp; exit</button>
+</aside>
+
+<main>
+<!-- Dashboard -->
+<section id="v-dash">
+  <div class="bar"><div><h1>Dashboard</h1><p class="sub">Student records stored in a singly linked list.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" data-xl hidden type="button">Export to Excel</button><button class="btn" data-add>+ Add student</button></div></div>
+  <div class="stats" id="stats"></div>
+  <div class="panel"><h2>Recently added</h2><p class="sub">The last five nodes in the list.</p><div class="scroll" id="recent"></div></div>
+</section>
+
+<!-- Students -->
+<section id="v-stu" hidden>
+  <div class="bar"><div><h1>Students</h1><p class="sub">Display, search and delete records.</p></div><button class="btn" data-add>+ Add student</button></div>
+  <div class="panel">
+    <div class="tools"><input id="q" placeholder="Search by registration number" aria-label="Registration number" autocomplete="off"><button class="btn" id="qs" type="button">Search student</button><button class="btn ghost" id="qc" type="button">Show all</button><button class="btn ghost" data-xl hidden type="button">Export to Excel</button></div>
+    <div class="scroll" id="all"></div>
+  </div>
+</section>
+
+<!-- Linked list -->
+<section id="v-list" hidden>
+  <div class="bar"><div><h1>Linked list</h1><p class="sub">Search walks the list from head until it finds a match or reaches NULL.</p></div></div>
+  <div class="panel">
+    <div class="tools"><input id="ls" placeholder="Registration number to search" aria-label="Registration number to search" autocomplete="off"><button class="btn" id="lsb" type="button">Search student</button></div>
+    <div class="chain" id="chain" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- Docs -->
+<section id="v-docs" class="docs" hidden>
+  <div class="bar"><div><h1>Documentation</h1><p class="sub">Data Structures mini-project</p></div></div>
+  <div class="two">
+    <div class="panel"><h2>Introduction</h2><p>A menu-driven C application that stores a registration number, student name and marks for each student. A singly linked list holds the records, and each node points to the next one, so memory is allocated only when a record is added.</p></div>
+    <div class="panel"><h2>Requirements</h2><ul><li>Add a new student record</li><li>Search by registration number</li><li>Delete by registration number</li><li>Display all records</li><li>Exit and release allocated memory</li></ul></div>
+  </div>
+  <div class="panel"><h2>Data structure</h2><pre>[ HEAD ] → [ Student 1 | next ] → [ Student 2 | next ] → [ Student 3 | NULL ]</pre><p>The head pointer holds the first node’s address. The last node’s next pointer is NULL. The program uses <code>malloc()</code> to create a node and <code>free()</code> to release it on delete or exit.</p></div>
+  <div class="panel"><h2>Algorithm</h2><ol>
+    <li>Start and set head to NULL.</li><li>Show the menu: Add, Search, Delete, Display, Exit.</li><li>Read the user’s choice.</li>
+    <li>Add: allocate a node, read the details, reject duplicate registration numbers, insert at the end.</li>
+    <li>Search: traverse the list for a matching registration number.</li>
+    <li>Delete: find the node, relink the previous node’s next pointer (or update head), free the node.</li>
+    <li>Display: traverse from head to NULL and print each record.</li>
+    <li>Repeat until Exit, then free all remaining nodes and stop.</li></ol></div>
+  <div class="panel"><h2>Sample input and output</h2><p>Sample values: choice 1 (Add), registration number 251FA19100, name Sujal Raj Gupta, marks 85.</p>
+<pre>D:\&gt;gcc student_record.c -o student_record.exe
+D:\&gt;student_record.exe
+
+=== Student Record Management System ===
+1. Add Student  2. Search Student  3. Delete Student
+4. Display All Students  5. Exit
+Enter your choice: 1
+Enter registration number: 251FA19100
+Enter student name: Sujal Raj Gupta
+Enter marks (0-100): 85
+Student record added successfully!
+
+Enter your choice: 2
+Enter registration number to search: 251FA19100
+Student Found!
+Registration Number: 251FA19100
+Name: Sujal Raj Gupta
+Marks: 85.00
+
+Enter your choice: 4
+--- Student Records ---
+Registration Number: 251FA19100
+Name: Sujal Raj Gupta
+Marks: 85.00
+-----------------------
+Enter your choice: 5
+Exiting application. Goodbye!</pre></div>
+  <div class="panel"><h2>C source code</h2>
+<details><summary>Show student_record.c</summary>
+<pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+struct Student {
+    char regNo[20];
+    char name[50];
+    float marks;
+    struct Student *next;
+};
+struct Student *head = NULL;
+
+void clearInput(void) {
+    int ch;
+    while ((ch = getchar()) != '\n' &amp;&amp; ch != EOF) { }
+}
+
+void addStudent(void) {
+    struct Student *node, *temp;
+    node = (struct Student *)malloc(sizeof(struct Student));
+    if (node == NULL) { printf("Memory allocation failed!\n"); return; }
+
+    printf("Enter registration number: ");
+    if (scanf("%19s", node-&gt;regNo) != 1) {
+        printf("Invalid registration number!\n");
+        free(node); clearInput(); return;
+    }
+    clearInput();
+
+    for (temp = head; temp != NULL; temp = temp-&gt;next) {
+        if (strcmp(temp-&gt;regNo, node-&gt;regNo) == 0) {
+            printf("Registration number already exists!\n");
+            free(node); return;
+        }
+    }
+
+    printf("Enter student name: ");
+    if (fgets(node-&gt;name, sizeof(node-&gt;name), stdin) == NULL) {
+        printf("Could not read student name.\n");
+        free(node); return;
+    }
+    node-&gt;name[strcspn(node-&gt;name, "\r\n")] = '\0';
+    if (node-&gt;name[0] == '\0') {
+        printf("Name cannot be empty!\n");
+        free(node); return;
+    }
+
+    printf("Enter marks (0-100): ");
+    if (scanf("%f", &amp;node-&gt;marks) != 1 ||
+        node-&gt;marks &lt; 0.0f || node-&gt;marks &gt; 100.0f) {
+        printf("Invalid marks. Enter a value from 0 to 100.\n");
+        free(node); clearInput(); return;
+    }
+    clearInput();
+
+    node-&gt;next = NULL;
+    if (head == NULL) head = node;
+    else {
+        temp = head;
+        while (temp-&gt;next != NULL) temp = temp-&gt;next;
+        temp-&gt;next = node;
+    }
+    printf("Student record added successfully!\n");
+}
+
+void searchStudent(void) {
+    char reg[20];
+    struct Student *temp = head;
+    printf("Enter registration number to search: ");
+    if (scanf("%19s", reg) != 1) {
+        printf("Invalid input!\n"); clearInput(); return;
+    }
+    clearInput();
+    while (temp != NULL) {
+        if (strcmp(temp-&gt;regNo, reg) == 0) {
+            printf("\nStudent Found!\n");
+            printf("Registration Number: %s\n", temp-&gt;regNo);
+            printf("Name: %s\n", temp-&gt;name);
+            printf("Marks: %.2f\n", temp-&gt;marks);
+            return;
+        }
+        temp = temp-&gt;next;
+    }
+    printf("Student record not found!\n");
+}
+
+void deleteStudent(void) {
+    char reg[20];
+    struct Student *temp = head, *prev = NULL;
+    printf("Enter registration number to delete: ");
+    if (scanf("%19s", reg) != 1) {
+        printf("Invalid input!\n"); clearInput(); return;
+    }
+    clearInput();
+    while (temp != NULL &amp;&amp; strcmp(temp-&gt;regNo, reg) != 0) {
+        prev = temp;
+        temp = temp-&gt;next;
+    }
+    if (temp == NULL) { printf("Student record not found!\n"); return; }
+    if (prev == NULL) head = temp-&gt;next;
+    else prev-&gt;next = temp-&gt;next;
+    free(temp);
+    printf("Student record deleted successfully!\n");
+}
+
+void displayStudents(void) {
+    struct Student *temp = head;
+    if (temp == NULL) { printf("No student records available.\n"); return; }
+    printf("\n--- Student Records ---\n");
+    while (temp != NULL) {
+        printf("Registration Number: %s\n", temp-&gt;regNo);
+        printf("Name: %s\n", temp-&gt;name);
+        printf("Marks: %.2f\n", temp-&gt;marks);
+        printf("-----------------------\n");
+        temp = temp-&gt;next;
+    }
+}
+
+void freeAllStudents(void) {
+    struct Student *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head-&gt;next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    int choice;
+    while (1) {
+        printf("\n=== Student Record Management System ===\n");
+        printf("1. Add Student\n2. Search Student\n3. Delete Student\n");
+        printf("4. Display All Students\n5. Exit\n");
+        printf("Enter your choice: ");
+        if (scanf("%d", &amp;choice) != 1) {
+            printf("Invalid menu choice. Enter a number from 1 to 5.\n");
+            clearInput(); continue;
+        }
+        clearInput();
+        switch (choice) {
+            case 1: addStudent(); break;
+            case 2: searchStudent(); break;
+            case 3: deleteStudent(); break;
+            case 4: displayStudents(); break;
+            case 5:
+                freeAllStudents();
+                printf("Exiting application. Goodbye!\n");
+                return 0;
+            default: printf("Invalid choice! Select 1 to 5.\n");
+        }
+    }
+}</pre></details></div>
+  <div class="panel"><h2>Conclusion</h2><p>The project demonstrates a singly linked list in C with insertion, searching, deletion and traversal. It also uses structures, pointers, dynamic memory allocation, input validation and string handling, which makes linked lists and memory management easy to understand in practice.</p></div>
+</section>
+</main>
+</div>
+
+<dialog id="dlg">
+  <h2>Add student</h2>
+  <label for="reg">Registration number</label><input id="reg" maxlength="19" autocomplete="off" placeholder="251FA19100">
+  <label for="name">Student name</label><input id="name" maxlength="49" autocomplete="off" placeholder="Sujal Raj Gupta">
+  <label for="marks">Marks (0–100)</label><input id="marks" type="number" min="0" max="100" step="any" placeholder="85">
+  <p class="err" id="err" role="alert"></p>
+  <div class="acts"><button class="btn ghost" id="cancel" type="button">Cancel</button><button class="btn" id="save" type="button">Add student</button></div>
+</dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},head=null,KEY="srms-records-v2",busy=false;
+var calm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+var wait=function(ms){return new Promise(function(r){setTimeout(r,calm?0:ms)})};
+var COLORS=["#6d4aff","#0f9d74","#e8590c","#d6336c","#1c7ed6","#9c36b5"];
+function Node(r,n,m){this.regNo=r;this.name=n;this.marks=m;this.next=null}
+function each(f){for(var t=head,i=0;t;t=t.next,i++)f(t,i)}
+function arr(){var a=[];each(function(t){a.push({r:t.regNo,n:t.name,m:t.marks})});return a}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(arr()))}catch(e){}}
+function append(r,n,m){var x=new Node(r,n,m);if(!head)head=x;else{var t=head;while(t.next)t=t.next;t.next=x}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function toast(msg,ok){var t=$("toast");t.textContent=msg;t.className="show"+(ok?"":" bad");clearTimeout(toast.t);toast.t=setTimeout(function(){t.className=""},2800)}
+function color(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return COLORS[h%COLORS.length]}
+function init(n){return n.split(/\s+/).map(function(w){return w[0]}).slice(0,2).join("").toUpperCase()}
+function pill(m){var c=m>=75?["g-soft","g"]:m>=40?["y-soft","ink"]:["r-soft","r"];return '<span class="pill" style="background:var(--'+c[0]+');color:var(--'+c[1]+')">'+m.toFixed(2)+'</span>'}
+function table(rows,hit,actions){
+  if(!rows.length)return '<div class="empty">No student records available. Add a student to create the first node.</div>';
+  var h='<table><thead><tr><th>Student</th><th>Registration number</th><th>Marks</th>'+(actions?'<th></th>':'')+'</tr></thead><tbody>';
+  rows.forEach(function(t){h+='<tr'+(t.regNo===hit?' class="hit"':'')+'><td><div class="who"><span class="av" style="background:'+color(t.regNo)+'">'+esc(init(t.name))+'</span>'+esc(t.name)+'</div></td><td class="mono">'+esc(t.regNo)+'</td><td>'+pill(t.marks)+'</td>'+(actions?'<td><button class="btn sm del" data-del="'+esc(t.regNo)+'">Delete</button></td>':'')+'</tr>'});
+  return h+'</tbody></table>';
+}
+function nodes(){var a=[];each(function(t){a.push(t)});return a}
+function render(newReg,hit){
+  var a=nodes(),n=a.length,sum=0,hi=null,lo=null;
+  a.forEach(function(t){sum+=t.marks;if(!hi||t.marks>hi.marks)hi=t;if(!lo||t.marks<lo.marks)lo=t});
+  var S=[["Total students",n,"nodes in the list","p-soft","👥"],["Average marks",n?(sum/n).toFixed(2):"–","across all records","g-soft","📈"],["Highest marks",hi?hi.marks.toFixed(2):"–",hi?hi.name:"no records","y-soft","🏆"],["Lowest marks",lo?lo.marks.toFixed(2):"–",lo?lo.name:"no records","r-soft","📉"]];
+  $("stats").innerHTML=S.map(function(s){return '<div class="stat"><div class="ic" style="background:var(--'+s[3]+')">'+s[4]+'</div><b>'+s[1]+'</b><span>'+s[0]+'</span><small>'+esc(s[2])+'</small></div>'}).join("");
+  $("recent").innerHTML=table(a.slice(-5).reverse());
+  $("all").innerHTML=table(a,hit,true);
+  var h='<span class="tag h">HEAD</span>';
+  if(!n)h+='<span class="ar">→</span><span class="tag n">NULL</span>';
+  a.forEach(function(t){h+='<span class="ar">→</span><div class="nd'+(t.regNo===newReg?' new':'')+'" data-reg="'+esc(t.regNo)+'"><span class="d"><b>'+esc(t.name)+'</b><small class="mono">'+esc(t.regNo)+'</small><small>Marks: '+t.marks.toFixed(2)+'</small></span><span class="x">'+(t.next?'next':'NULL')+'</span></div>'});
+  if(n)h+='<span class="ar">→</span><span class="tag n">NULL</span>';
+  $("chain").innerHTML=h;
+}
+function find(reg){for(var t=head;t;t=t.next)if(t.regNo===reg)return t;return null}
+function remove(reg){
+  var t=head,p=null;
+  while(t&&t.regNo!==reg){p=t;t=t.next}
+  if(!t){toast("Student record not found!",false);return}
+  if(!p)head=t.next;else p.next=t.next;
+  save();render();toast("Student record deleted successfully!",true);
+}
+async function walk(reg){
+  var t=head;
+  while(t){
+    var el=document.querySelector('#chain .nd[data-reg="'+reg.replace(/"/g,"")+'"]');
+    var cur=nodeFor(t.regNo);
+    if(cur)cur.classList.add("visit");
+    await wait(450);
+    if(t.regNo===reg){if(cur){cur.classList.remove("visit");cur.classList.add("found")}return t}
+    if(cur)cur.classList.remove("visit");
+    t=t.next;
+  }
+  return null;
+}
+function nodeFor(r){var e=document.querySelectorAll("#chain .nd");for(var i=0;i<e.length;i++)if(e[i].getAttribute("data-reg")===r)return e[i];return null}
+
+/* navigation */
+function show(v){
+  ["dash","stu","list","docs"].forEach(function(k){$("v-"+k).hidden=k!==v});
+  document.querySelectorAll(".tab").forEach(function(b){if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){show(b.dataset.v)}});
+
+/* add */
+var dlg=$("dlg");
+document.querySelectorAll("[data-add]").forEach(function(b){b.onclick=function(){$("err").textContent="";dlg.showModal();$("reg").focus()}});
+$("cancel").onclick=function(){dlg.close()};
+$("save").onclick=function(){
+  var r=$("reg").value.trim(),n=$("name").value.trim(),raw=$("marks").value.trim(),m=parseFloat(raw),e=$("err");
+  if(!r||/\s/.test(r))return e.textContent="Invalid registration number. Use letters and digits without spaces.";
+  if(find(r))return e.textContent="Registration number already exists!";
+  if(!n)return e.textContent="Name cannot be empty!";
+  if(raw===""||isNaN(m)||m<0||m>100)return e.textContent="Invalid marks. Enter a value from 0 to 100.";
+  append(r,n,m);save();render(r);dlg.close();
+  $("reg").value=$("name").value=$("marks").value="";
+  toast("Student record added successfully!",true);
+};
+dlg.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.tagName==="INPUT")$("save").click()});
+
+/* students: search + delete */
+$("qs").onclick=function(){
+  var r=$("q").value.trim();if(!r)return toast("Invalid input!",false);
+  var t=find(r);
+  if(!t){render();return toast("Student record not found!",false)}
+  $("all").innerHTML=table([t],r,true);
+  toast("Student Found!\n"+t.name+" · "+t.marks.toFixed(2),true);
+};
+$("qc").onclick=function(){$("q").value="";render()};
+$("q").addEventListener("keydown",function(e){if(e.key==="Enter")$("qs").click()});
+$("all").onclick=function(e){var b=e.target.closest("[data-del]");if(b)remove(b.getAttribute("data-del"))};
+
+/* list: animated search */
+$("lsb").onclick=async function(){
+  if(busy)return;var r=$("ls").value.trim();if(!r)return toast("Invalid input!",false);
+  busy=true;$("lsb").disabled=true;render();
+  var f=await walk(r);busy=false;$("lsb").disabled=false;
+  if(f)toast("Student Found!\n"+f.name+" · "+f.marks.toFixed(2),true);else toast("Student record not found!",false);
+};
+$("ls").addEventListener("keydown",function(e){if(e.key==="Enter")$("lsb").click()});
+
+/* export to excel */
+var dl=null;
+async function exportXlsx(){
+  if(!head)return toast("No student records available.",false);
+  if(typeof XLSX==="undefined")return toast("Excel export could not load. Check your connection and reload.",false);
+  var rows=[["S.No","Registration number","Name","Marks"]];
+  each(function(t,i){rows.push([i+1,t.regNo,t.name,t.marks])});
+  var ws=XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"]=[{wch:7},{wch:22},{wch:30},{wch:9}];
+  var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Students");
+  if(!dl){try{XLSX.writeFile(wb,"student_records.xlsx");toast("Excel file downloaded with "+(rows.length-1)+" records.",true)}catch(e){toast("Could not export the file.",false)}return}
+  var buf=XLSX.write(wb,{bookType:"xlsx",type:"array"});
+  try{await dl.save({filename:"student_records.xlsx",data:buf});toast("Excel file exported with "+(rows.length-1)+" records.",true)}
+  catch(e){if(!e||e.code!=="declined")toast("Could not export the file.",false)}
+}
+document.querySelectorAll("[data-xl]").forEach(function(b){b.hidden=false;b.onclick=exportXlsx});
+try{if(window.claude&&claude.use)claude.use("downloads").then(function(d){if(d){dl=d;document.querySelectorAll("[data-xl]").forEach(function(b){b.hidden=false})}}).catch(function(){})}catch(e){}
+
+/* exit + theme */
+$("exit").onclick=function(){head=null;save();render();toast("Exiting application. Goodbye!",true)};
+$("theme").onclick=function(){var r=document.documentElement,a=r.getAttribute("data-theme"),d=a?a==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.setAttribute("data-theme",d?"light":"dark")};
+
+/* load */
+var data=null;
+try{var s=localStorage.getItem(KEY);if(s)data=JSON.parse(s)}catch(e){}
+if(!Array.isArray(data))data=[{r:"251FA19100",n:"Sujal Raj Gupta",m:85}];
+data.forEach(function(d){append(d.r,d.n,d.m)});
+render();
+})();
+</script>
+</body>
+</html>
